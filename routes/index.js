@@ -1,14 +1,15 @@
 const router = require('koa-router')()
 
 router.get('/', async (ctx, next) => {
-  await ctx.render('index', {
-    title: 'Hello Koa 2!'
-  })
+  ctx.response.body = `<h1>Index</h1>
+  <form action="/signin" method="post">
+      <p>Name: <input name="username"></p>
+      <p>Password: <input name="password" type="password"></p>
+      <p><input type="submit" value="Submit"></p>
+  </form>`;
 })
 
-router.get('/string', async (ctx, next) => {
-  ctx.body = 'koa2 string'
-})
+
 
 router.get('/json', async (ctx, next) => {
   ctx.body = {

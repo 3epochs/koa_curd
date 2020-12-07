@@ -79,4 +79,72 @@ router.del('/delete', async (ctx, next)  => {
     }
 })
 
+router.post('/signin', async (ctx, next) => {
+    let userInfo = ctx.request.body;
+    const sql = `select * from userbase where username = ? and password = ?`;
+    const queryData = [ctx.request.body.username, ctx.request.body.password];
+    const data = await query(sql, queryData);
+    if (data.length == 0) {
+        ctx.response.body = `<h1>Login failed!</h1>
+        <p><a href="/">Try again</a></p>`;
+    }
+    else {
+        ctx.response.body = `<h1>Welcome, ${userInfo.username}!</h1>
+        <form action="/delUser" method="post">
+            <p>Name: <input name="username"></p>
+            <p><input type="submit" value="Delete"></p>
+        </form>`;
+    }
+  })
+
+  router.post('/delUser', async (ctx, next) => {
+    let userInfo = ctx.request.body;
+    const sql = `delete from userbase where username = ?`;
+    const queryData = [ctx.request.body.username];
+    const data = await query(sql, queryData);
+    if (data.length == 0) {
+        ctx.response.body = `<h1>delete failed!</h1>`
+    }
+    else {
+        ctx.response.body = `<h1>successfully delete user ${userInfo.username}!</h1>
+        <form action="/addUser" method="post">
+            <p>Name: <input name="username"></p>
+            <p>Password: <input name="password" type="password"></p>
+            <p><input type="submit" value="Add"></p>
+        </form>`;
+    }
+  })
+
+  router.post('/addUser', async (ctx, next) => {
+    let userInfo = ctx.request.body;
+    const sql = `insert into userbase (username, password) values (?, ?)`;
+    const queryData = [ctx.request.body.username, ctx.request.body.password];
+    const data = await query(sql, queryData);
+    if (data.length == 0) {
+        ctx.response.body = `<h1>addUser failed!</h1>`
+    }
+    else {
+        ctx.response.body = `<h1>successfully add user ${userInfo.username}!</h1>
+        <form action="/updateUser" method="post">
+            <p>Name: <input name="username"></p>
+            <p>Old Password: <input name="password" type="password"></p>
+            <p>new Password: <input name="newpassword" type="password"></p>
+            <p><input type="submit" value="UpdatePassword"></p>
+        </form>`;
+    }
+  })
+
+  router.post('/updateUser', async (ctx, next) => {
+    let userInfo = ctx.request.body;
+    const sql = `update userbase set password = ? where username = ?`;
+    const queryData = [ctx.request.body.newpassword, ctx.request.body.username];
+    const data = await query(sql, queryData);
+    if (data.length == 0) {
+        ctx.response.body = `<h1>updatePassword failed!</h1>`
+    }
+    else {
+        ctx.response.body = `<h1>successfully update password ${userInfo.username}!</h1>`
+    }
+  })
+
 module.exports = router;

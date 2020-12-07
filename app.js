@@ -11,6 +11,7 @@ const users = require('./routes/users')
 
 // mine
 const dataOperation = require('./routes/dataOperation');
+const ws = require('./routes/ws');
 
 // error handler
 onerror(app)
@@ -38,6 +39,7 @@ app.use(async (ctx, next) => {
 
 // routes
 app.use(dataOperation.routes(), dataOperation.allowedMethods())
+app.use(ws.routes(), ws.allowedMethods())
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 
